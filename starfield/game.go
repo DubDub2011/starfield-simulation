@@ -8,13 +8,13 @@ import (
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 )
 
-const (
-	MaxSpeed = 5
-)
+const maxSpeed = 25
+
+var speed = 0.0
 
 type Game struct {
-	ScreenWidth  int
-	ScreenHeight int
+	ScreenWidth  float64
+	ScreenHeight float64
 
 	starfield []*Star
 }
@@ -27,8 +27,18 @@ func (g *Game) Setup(starNum int) {
 }
 
 func (g *Game) Update(screen *ebiten.Image) error {
-	for _, star := range g.starfield {
-		star.z--
+	cx, _ := ebiten.CursorPosition()
+	if cx < 0 || cx > int(g.ScreenWidth) { // not sure why get a very weird value at the start that screws everything
+		return nil
+	}
+
+	speed = utils.Map(float64(cx), 0, float64(g.ScreenWidth), 1, maxSpeed)
+
+	for idx, star := range g.starfield {
+		star.z -= speed
+		if star.z <= 0 {
+			g.starfield[idx] = NewStar(g.ScreenWidth, g.ScreenHeight)
+		}
 	}
 	return nil
 }
@@ -39,10 +49,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		sx := utils.Map(star.x/star.z, 0, 1, 0, float64(g.ScreenWidth)) + float64(g.ScreenWidth/2)
 		sy := utils.Map(star.y/star.z, 0, 1, 0, float64(g.ScreenHeight)) + float64(g.ScreenHeight/2)
 
-		ebitenutil.DrawRect(screen, sx, sy, 2, 2, color.White)
+		psx := utils.Map(star.x/(star.z+speed), 0, 1, 0, float64(g.ScreenWidth)) + float64(g.ScreenWidth/2)
+		psy := utils.Map(star.y/(star.z+speed), 0, 1, 0, float64(g.ScreenHeight)) + float64(g.ScreenHeight/2)
+
+		r := utils.Map(star.z, 0, float64(g.ScreenWidth), 2, 0)
+
+		ebitenutil.DrawRect(screen, sx, sy, r, r, color.White)
+		ebitenutil.DrawLine(screen, sx, sy, psx, psy, color.RGBA{240, 240, 240, 255})
 	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return g.ScreenWidth, g.ScreenHeight
+	return int(g.ScreenWidth), int(g.ScreenHeight)
 }
