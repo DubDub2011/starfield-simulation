@@ -2,6 +2,7 @@ package starfield
 
 import (
 	"image/color"
+	"starfield-simulation/utils"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
@@ -26,12 +27,19 @@ func (g *Game) Setup(starNum int) {
 }
 
 func (g *Game) Update(screen *ebiten.Image) error {
+	for _, star := range g.starfield {
+		star.z--
+	}
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+
 	for _, star := range g.starfield {
-		ebitenutil.DrawRect(screen, float64(star.x), float64(star.y), 2, 2, color.White)
+		sx := utils.Map(star.x/star.z, 0, 1, 0, float64(g.ScreenWidth)) + float64(g.ScreenWidth/2)
+		sy := utils.Map(star.y/star.z, 0, 1, 0, float64(g.ScreenHeight)) + float64(g.ScreenHeight/2)
+
+		ebitenutil.DrawRect(screen, sx, sy, 2, 2, color.White)
 	}
 }
 
