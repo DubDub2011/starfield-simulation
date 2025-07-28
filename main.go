@@ -1,22 +1,23 @@
 package main
 
 import (
+	"starfield-simulation/starfield"
+
 	"github.com/hajimehoshi/ebiten"
 )
 
-type Game struct{}
-
-func (g *Game) Update(screen *ebiten.Image) error {
-	return nil
-}
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return 1280, 720
-}
+const (
+	screenWidth  = 1280
+	screenHeight = 720
+)
 
 func main() {
-	ebiten.SetWindowSize(1280, 720)
+	ebiten.SetWindowSize(screenWidth, screenHeight)
 
-	game := &Game{}
+	game := &starfield.Game{
+		ScreenWidth:  screenWidth,
+		ScreenHeight: screenHeight,
+	}
+
 	ebiten.RunGame(game)
 }
