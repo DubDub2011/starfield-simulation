@@ -19,5 +19,7 @@ func main() {
 		ScreenHeight: screenHeight,
 	}
 
+	game.Setup(1000)
+
 	ebiten.RunGame(game)
 }
