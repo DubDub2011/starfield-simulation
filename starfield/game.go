@@ -46,14 +46,18 @@ func (g *Game) Update(screen *ebiten.Image) error {
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	for _, star := range g.starfield {
+		// Translate the star's position based on its z value
 		sx := utils.Map(star.x/star.z, 0, 1, 0, float64(g.ScreenWidth)) + float64(g.ScreenWidth/2)
 		sy := utils.Map(star.y/star.z, 0, 1, 0, float64(g.ScreenHeight)) + float64(g.ScreenHeight/2)
 
+		// Get the previous position based on the speed
 		psx := utils.Map(star.x/(star.z+speed), 0, 1, 0, float64(g.ScreenWidth)) + float64(g.ScreenWidth/2)
 		psy := utils.Map(star.y/(star.z+speed), 0, 1, 0, float64(g.ScreenHeight)) + float64(g.ScreenHeight/2)
 
+		// Calculate the radius based on the z value
 		r := utils.Map(star.z, 0, float64(g.ScreenWidth), 2, 0)
 
+		// Draw the star and its trace
 		ebitenutil.DrawRect(screen, sx, sy, r, r, color.White)
 		ebitenutil.DrawLine(screen, sx, sy, psx, psy, color.RGBA{240, 240, 240, 255})
 	}
