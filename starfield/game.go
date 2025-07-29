@@ -66,3 +66,5 @@ func (g *Game) Draw(screen *ebiten.Image) {
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return int(g.ScreenWidth), int(g.ScreenHeight)
 }
+
+// For MR test 1
